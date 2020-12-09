@@ -1,0 +1,24 @@
+{
+  "name": "game-of-life",
+  "version": "1.0.0",
+  "description": "Canvas version of Conways Game of life",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjm1374/game-of-life.git"
+  },
+  "author": "Mike McAllister",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjm1374/game-of-life/issues"
+  },
+  "homepage": "https://github.com/mjm1374/game-of-life#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "gulp": "^4.0.2"
+  }
+}
