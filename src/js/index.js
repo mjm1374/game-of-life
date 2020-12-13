@@ -69,12 +69,6 @@ canvas.addEventListener('click', function(event) {
 
 }, false);
 
-function flipColor(gridItem){
-    let newbox = boxes.find(box => box.id === gridItem.id);
-    (newbox.fill) ? newbox.fill = false : newbox.fill = true;
-    boxes.splice(newbox.id, 1, newbox);
-    drawGrid(newbox);
-}
 
 /**
  * Paints the grib item to the screen.
@@ -87,35 +81,63 @@ function drawGrid(box) {
         box.y,
         box.width,
 		box.height
-	);
+    );
+    
     ctx.fillStyle = box.color;
-
     (box.fill) ? ctx.fill() : ctx.stroke();
 	ctx.closePath();
 	ctx.restore();
 }
 
+
+// Ev ent listener
 let stepBtn = document.querySelector('[data-step]');
-document.addEventListener('click', () => {
+stepBtn.addEventListener('click', () => {
     stepIteration();
 });
+
+
+function flipColor(gridItem){
+    let newbox = boxes.find(box => box.id === gridItem.id);
+    (newbox.fill) ? newbox.fill = false : newbox.fill = true; 
+    boxes.splice(newbox.id, 1, newbox);
+    drawGrid(newbox);
+}
+
+function updateData(gridItem){
+    let newbox = boxes.find(box => box.id === gridItem.id);
+    boxes.splice(newbox.id, 1, newbox);
+    return newbox;
+}
 
 function stepIteration(){
     
     boxes.forEach((box) => {
         if (box.fill) checkPopulated(box);
-        //let localPopulation = checkPopulated(box);
+        let localPopulation = checkPopulated(box);
+        if(box.fill === false && localPopulation === 3) box.fill = true;
+        if(box.fill === true && localPopulation < 2 || localPopulation > 3) box.fill = false;
+        
+        updateData(box);
     })
+
+    updateGrid();
+}
+
+
+function updateGrid(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    boxes.forEach((box) => drawGrid(box));
 }
 
 function checkPopulated(box){
-    console.log(box);
     const boxId = box.id;
     const colPos = box.y;
     const rowPos = box.x;
     const testGridCol = [];
     const testGrid = [];
-    const searchCoord = [-20, 0, 20];
+    const searchCoord = [-20, 0, 20]; // use offset
+    let population;
 
     for (let i = 0; i < 3; i++) {
         let searchCol = colPos + searchCoord[i];
@@ -125,14 +147,12 @@ function checkPopulated(box){
 
     for (let i = 0; i < 3; i++) {
         let searchRow = rowPos + searchCoord[i];
-        console.log(searchRow)
         let thisCol = testGridCol.filter((box) => box.x == searchRow );
         testGrid.push(...thisCol);
     }
     
     const center = testGrid.find(box => box.id === boxId);
     testGrid.splice(testGrid.indexOf(center), 1);
-    console.log('testGrid',testGrid);
-
-    return null;
+    population = testGrid.reduce((a, b) => ({fill: a.fill + b.fill}));
+    return population.fill;
 }
