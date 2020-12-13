@@ -102,11 +102,37 @@ document.addEventListener('click', () => {
 
 function stepIteration(){
     
-    boxes.while((box) => {
-        let localPopulation = checkPopulated(box);
+    boxes.forEach((box) => {
+        if (box.fill) checkPopulated(box);
+        //let localPopulation = checkPopulated(box);
     })
 }
 
 function checkPopulated(box){
+    console.log(box);
+
+    let colPos = box.y;
+    let rowPos = box.x;
+    let testGridCol = [];
+    let testGridRow = [];
+    const searchCoord = [-20, 0, 20];
+
+    for (let i = 0; i < 3; i++) {
+        let searchCol = colPos + searchCoord[i];
+        let thisCol = boxes.filter((box) => box.y == searchCol );
+        testGridCol.push(...thisCol);
+    }
+
+    console.log('testGridCol',testGridCol)
+    for (let i = 0; i < 3; i++) {
+        let searchRow = rowPos + searchCoord[i];
+        console.log(searchRow)
+        let thisCol = testGridCol.filter((box) => box.x == searchRow );
+        testGridRow.push(...thisCol);
+    }
+    
+
+    console.log('testGrid',testGridRow)
+
     return null;
 }
