@@ -4,13 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game of life</title>
-    
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Mr+Dafoe&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/life.css">
+
 </head>
 <body>
-    <h1>The Game of Life</h1>
-    <canvas id="canvas-container"  style="border:1px solid #000;"></canvas>
-    <button class="btn btn__step" data-step>Step</button>
-    <button class="btn btn__run" data-step>Run</button>
+    <div class="hero">
+        <h1>Conway's Game of Life</h1>
+        <5ection id="gameboard">
+            <div class="container">
+                <canvas id="canvas-container"></canvas>
+            </div>
+        </5ection>
+
+        <section id="tools">
+            <div class="container">
+                <div class="gen" id="gen"></div>
+                <button class="btn btn__step" data-step>Step</button>
+                <button class="btn btn__run" data-run="false">Run</button>
+            </div>
+        </section>
+    </div>
+    
 </body>
     <script src="js/index.js"></script>
 </html>

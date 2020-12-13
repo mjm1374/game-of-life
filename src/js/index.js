@@ -5,12 +5,15 @@ elemTop = canvas.offsetTop,
 x = 0,
 y = 0,
 id = 0,
-offset = 20,
+offset = 10,
 canvasWidth = 1000,
 canvasHeight = 500
 generation = 0;
 let boxes = [];
 let nextGenBoxes = boxes;
+let genTarget = document.getElementById('gen');
+let stepBtn = document.querySelector('[data-step]');
+let runBtn = document.querySelector('[data-run]');
 
 ctx.canvas.width  = canvasWidth;
 ctx.canvas.height = canvasHeight;
@@ -19,7 +22,7 @@ class Box{
     x = 0;
     y = 0;
     fill = false;
-    color = '#000';
+    color = '#57b816';
     width = 20;
     height = 20;
     population = 0;
@@ -40,10 +43,11 @@ class Box{
 }
 
 function buildGrid(){
+    setgeneration(generation);
     while (x < canvasWidth) {
         let column = [];
         while (y < canvasHeight){
-            let box =  new Box(id, x, y, false,'#000', offset, 0);
+            let box =  new Box(id, x, y, false,'#57b816', offset, 0);
             y = y + offset;
             id++;
             boxes.push(box);
@@ -61,6 +65,7 @@ buildGrid();
  * Paints the grib item to the screen.
  */
 function drawGrid(box) {
+    ctx.clearRect(box.x, box.y,  box.width, box.height);
 	ctx.save();
 	ctx.beginPath();
 	ctx.rect(
@@ -71,6 +76,7 @@ function drawGrid(box) {
     );
     
     ctx.fillStyle = box.color;
+    ctx.strokeStyle = '#56962a';
     (box.fill) ? ctx.fill() : ctx.stroke();
 	ctx.closePath();
 	ctx.restore();
@@ -78,7 +84,6 @@ function drawGrid(box) {
 
 
 // Event listeners
-let stepBtn = document.querySelector('[data-step]');
 stepBtn.addEventListener('click', () => {
     stepIteration();
 });
@@ -87,7 +92,6 @@ stepBtn.addEventListener('click', () => {
 canvas.addEventListener('click', function(event) {
     var x = event.pageX - elemLeft,
         y = event.pageY - elemTop;
-    //console.log(x, y);
     boxes.forEach(function(box) {
         if (y > box.y && y < box.y + box.width && x > box.x && x < box.x + box.height) {
             console.log('clicked an element', box.id, box.x, box.y);
@@ -96,13 +100,16 @@ canvas.addEventListener('click', function(event) {
     });
 }, false);
 
+runBtn.addEventListener('click',() =>{
+ console.log('click')
+});
+
 // adds and subtracts to the data set
 function flipColor(gridItem){
     let newbox = boxes.find(box => box.id === gridItem.id);
     (newbox.fill) ? newbox.fill = false : newbox.fill = true; 
     boxes.splice(newbox.id, 1, newbox);
     drawGrid(newbox);
-    // updateGrid();
 }
 
 function updateData(gridItem, pop){
@@ -113,6 +120,7 @@ function updateData(gridItem, pop){
 
 function stepIteration(){
     generation++;
+    setgeneration(generation);
     let fill = false;
     boxes.forEach((box) => {
         let localPopulation = checkPopulated(box);
@@ -139,7 +147,7 @@ function checkPopulated(box){
     const rowPos = box.x;
     const testGridCol = [];
     const testGrid = [];
-    const searchCoord = [-20, 0, 20]; // use offset
+    const searchCoord = [-Math.abs(offset), 0, offset]; // use offset
     let population;
 
     for (let i = 0; i < 3; i++) {
@@ -158,4 +166,8 @@ function checkPopulated(box){
     testGrid.splice(testGrid.indexOf(center), 1);
     population = testGrid.reduce((a, b) => ({fill: a.fill + b.fill}));
     return population.fill;
+}
+
+function setgeneration(gen){
+    genTarget.innerText = `Generation: ${gen}`;
 }
