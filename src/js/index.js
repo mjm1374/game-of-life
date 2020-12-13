@@ -110,11 +110,11 @@ function stepIteration(){
 
 function checkPopulated(box){
     console.log(box);
-
-    let colPos = box.y;
-    let rowPos = box.x;
-    let testGridCol = [];
-    let testGridRow = [];
+    const boxId = box.id;
+    const colPos = box.y;
+    const rowPos = box.x;
+    const testGridCol = [];
+    const testGrid = [];
     const searchCoord = [-20, 0, 20];
 
     for (let i = 0; i < 3; i++) {
@@ -123,16 +123,16 @@ function checkPopulated(box){
         testGridCol.push(...thisCol);
     }
 
-    console.log('testGridCol',testGridCol)
     for (let i = 0; i < 3; i++) {
         let searchRow = rowPos + searchCoord[i];
         console.log(searchRow)
         let thisCol = testGridCol.filter((box) => box.x == searchRow );
-        testGridRow.push(...thisCol);
+        testGrid.push(...thisCol);
     }
     
-
-    console.log('testGrid',testGridRow)
+    const center = testGrid.find(box => box.id === boxId);
+    testGrid.splice(testGrid.indexOf(center), 1);
+    console.log('testGrid',testGrid);
 
     return null;
 }
