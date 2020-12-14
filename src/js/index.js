@@ -15,6 +15,10 @@ let genTarget = document.getElementById('gen');
 let stepBtn = document.querySelector('[data-step]');
 let runBtn = document.querySelector('[data-run]');
 let restBtn = document.querySelector('[data-reset]');
+const yearTag =  document.getElementById('year');
+const year = null;
+
+yearTag.innerText = new Date().getFullYear()
 
 ctx.canvas.width  = canvasWidth;
 ctx.canvas.height = canvasHeight;

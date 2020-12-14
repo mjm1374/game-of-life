@@ -9,7 +9,8 @@
 body{
     background-image: url('../img/JohnConway.jpg');
     background-size: cover;
-    background-color: #000;;
+    background-color: #000;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 h1{
@@ -56,10 +57,14 @@ h1{
     color: white;
     padding: 20px 0;
     display: block;
-    font-family: 'Courier New', Courier, monospace;
     text-decoration: none;
 }
 
 .ext-link:hover{
     text-decoration: underline;
+}
+
+footer{
+    color: #ececec;
+    padding: 20px;
 }
