@@ -92,6 +92,8 @@ function drawGrid(box) {
 
 
 // Event listeners
+document.addEventListener('contextmenu', event => event.preventDefault());
+
 stepBtn.addEventListener('click', () => {
     stepIteration();
 });
