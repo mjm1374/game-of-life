@@ -1,0 +1,53 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Mr+Dafoe&family=Pacifico&display=swap');
+
+body{
+    background-image: url('../img/JohnConway.jpg');
+    background-size: cover;
+    background-color: #000;;
+}
+
+h1{
+    font-family: 'Mr Dafoe', 'Pacifico', cursive;
+    margin-bottom: 20px;
+    font-size: 100px;
+    color: #fff;
+    position: relative;
+    text-shadow: 2px 2px 8px chartreuse;
+    top: 20px;
+    opacity: .75;
+    padding-left: 25px;
+}
+ 
+#gameboard{
+    display: block;
+    width: 100vw;
+ 
+    
+}
+
+.container{
+    margin: 0 auto;
+    display: block;
+    width: 1000px;
+    height: 500px;
+}
+
+#canvas-container{
+    border: 1px solid white;
+}
+
+.btn {
+    padding: 10px;
+}
+
+.gen {
+    color: #fff;
+    font: 1em sans-serif;
+    padding: 20px 0;
+}

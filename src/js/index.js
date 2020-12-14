@@ -14,6 +14,7 @@ let nextGenBoxes = boxes;
 let genTarget = document.getElementById('gen');
 let stepBtn = document.querySelector('[data-step]');
 let runBtn = document.querySelector('[data-run]');
+let restBtn = document.querySelector('[data-reset]');
 
 ctx.canvas.width  = canvasWidth;
 ctx.canvas.height = canvasHeight;
@@ -44,14 +45,17 @@ class Box{
 
 function buildGrid(){
     setgeneration(generation);
+    x = 0;
+    y = 0;
+    id = 0;
+    boxes = [];
+
     while (x < canvasWidth) {
-        let column = [];
         while (y < canvasHeight){
             let box =  new Box(id, x, y, false,'#57b816', offset, 0);
             y = y + offset;
             id++;
             boxes.push(box);
-            column.push(box);
             drawGrid(box);
         }
         y = 0;
@@ -88,21 +92,40 @@ stepBtn.addEventListener('click', () => {
     stepIteration();
 });
 
+restBtn.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearInterval(window.setRunTime);
+    runBtn.setAttribute('data-run', true) ;
+    runBtn.innerText = "Run";
+    generation = 0;
+    buildGrid();
+});
+
 
 canvas.addEventListener('click', function(event) {
     var x = event.pageX - elemLeft,
         y = event.pageY - elemTop;
     boxes.forEach(function(box) {
         if (y > box.y && y < box.y + box.width && x > box.x && x < box.x + box.height) {
-            console.log('clicked an element', box.id, box.x, box.y);
+            //console.log('clicked an element', box.id, box.x, box.y);
             flipColor(box);
         }
     });
 }, false);
 
 runBtn.addEventListener('click',() =>{
- console.log('click')
+    if (runBtn.getAttribute('data-run') == 'true') {
+        window.setRunTime = setInterval(stepIteration, 50);
+        runBtn.setAttribute('data-run', false);
+        runBtn.innerText = "Stop";
+    } else {
+        clearInterval(window.setRunTime);
+        runBtn.setAttribute('data-run', true) ;
+        runBtn.innerText = "Run";
+    }
 });
+
+
 
 // adds and subtracts to the data set
 function flipColor(gridItem){
@@ -113,9 +136,10 @@ function flipColor(gridItem){
 }
 
 function updateData(gridItem, pop){
-    let newbox = nextGenBoxes.find(box => box.id === gridItem.id);
+    let newbox = boxes.find(box => box.id === gridItem.id);
     newbox.population = pop;
-    nextGenBoxes.splice(newbox.id, 1, newbox);
+    boxes.splice(newbox.id, 1, newbox);
+    //console.log('boxes', boxes.length)
 }
 
 function stepIteration(){
