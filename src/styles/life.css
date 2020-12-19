@@ -43,6 +43,12 @@ h1{
     margin-top: 20px;
 }
 
+
+.container.tools{
+    margin: 0 auto;
+    height:200px;
+}
+
 #canvas-container{
     border: 1px solid white;
     

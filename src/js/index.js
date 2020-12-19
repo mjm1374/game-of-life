@@ -50,7 +50,7 @@ class Box {
 }
 
 function buildGrid() {
-	setgeneration(generation);
+	setGeneration(generation);
 	x = 0;
 	y = 0;
 	id = 0;
@@ -69,10 +69,6 @@ function buildGrid() {
 	}
 }
 
-document.fonts.ready.then(function () {
-	buildGrid();
-});
-
 /**
  * Paints the grid item to the screen.
  */
@@ -81,79 +77,12 @@ function drawGrid(box) {
 	ctx.save();
 	ctx.beginPath();
 	ctx.rect(box.x, box.y, box.width, box.height);
-
 	ctx.fillStyle = box.color;
 	ctx.strokeStyle = '#56962a';
 	box.fill ? ctx.fill() : ctx.stroke();
 	ctx.closePath();
 	ctx.restore();
 }
-
-// Event listeners
-document.addEventListener('contextmenu', (event) => event.preventDefault());
-
-stepBtn.addEventListener('click', () => {
-	stepIteration();
-});
-
-restBtn.addEventListener('click', () => {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	clearInterval(window.setRunTime);
-	runBtn.setAttribute('data-run', true);
-	runBtn.innerText = 'Run';
-	generation = 0;
-	buildGrid();
-});
-
-for (let i = 0, len = paintRadios.length; i < len; i++) {
-	paintRadios[i].addEventListener(
-		'click',
-		function () {
-			paint = this.value == 'true' ? true : false;
-			console.log(paint);
-		},
-		false
-	);
-}
-// paintRadios.addEventListener('click', () => {
-// 	for (const radio of paintRadios) {
-// 		if (radio.checked) {
-// 			paint = radio.value;
-// 			break;
-// 		}
-// 	}
-// });
-
-canvas.addEventListener(
-	'mousedown',
-	(e) => {
-		isDrawing = true;
-		let x = e.pageX - elemLeft,
-			y = e.pageY - elemTop;
-		checkBoxesonClick(x, y, 'click');
-	},
-	false
-);
-
-canvas.addEventListener(
-	'mouseup',
-	() => {
-		isDrawing = false;
-	},
-	false
-);
-
-canvas.addEventListener(
-	'mousemove',
-	function (e) {
-		if (isDrawing) {
-			let x = e.pageX - elemLeft,
-				y = e.pageY - elemTop;
-			debounce(checkBoxesonClick(x, y, 'paint'), 250);
-		}
-	},
-	false
-);
 
 function checkBoxesonClick(x, y, state) {
 	boxes.forEach(function (box) {
@@ -170,32 +99,20 @@ function checkBoxesonClick(x, y, state) {
 }
 
 function debounce(func, wait, immediate) {
-	var timeout;
+	let timeout;
 	return function () {
-		var context = this,
+		let context = this,
 			args = arguments;
-		var later = function () {
+		let later = function () {
 			timeout = null;
 			if (!immediate) func.apply(context, args);
 		};
-		var callNow = immediate && !timeout;
+		let callNow = immediate && !timeout;
 		clearTimeout(timeout);
 		timeout = setTimeout(later, wait);
 		if (callNow) func.apply(context, args);
 	};
 }
-
-runBtn.addEventListener('click', () => {
-	if (runBtn.getAttribute('data-run') == 'true') {
-		window.setRunTime = setInterval(stepIteration, 50);
-		runBtn.setAttribute('data-run', false);
-		runBtn.innerText = 'Stop';
-	} else {
-		clearInterval(window.setRunTime);
-		runBtn.setAttribute('data-run', true);
-		runBtn.innerText = 'Run';
-	}
-});
 
 // adds and subtracts to the data set
 function flipColor(gridItem) {
@@ -222,7 +139,7 @@ function updateData(gridItem, pop) {
 
 function stepIteration() {
 	generation++;
-	setgeneration(generation);
+	setGeneration(generation);
 	let fill = false;
 	boxes.forEach((box) => {
 		let localPopulation = checkPopulated(box);
@@ -269,6 +186,10 @@ function checkPopulated(box) {
 	return population.fill;
 }
 
-function setgeneration(gen) {
+function setGeneration(gen) {
 	genTarget.innerText = `Generation: ${gen}`;
 }
+
+document.fonts.ready.then(function () {
+	buildGrid();
+});
