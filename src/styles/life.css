@@ -1,28 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@600&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Mr+Dafoe&family=Pacifico&display=swap');
-
 body{
     background-image: url('../img/JohnConway.jpg');
     background-size: cover;
     background-color: #000;
     font-family: 'Courier New', Courier, monospace;
+    color:#fff;
 }
 
 h1{
-    font-family: 'Mr Dafoe', 'Pacifico', cursive;
-    margin-bottom: 20px;
-    font-size: 100px;
-    color: #fff;
+    display: inline-block;
     position: relative;
+    margin-bottom: 20px;
+    top: 20px; 
+    left: 50vw;
+    left: 50vw;
+    transform: translateX(-50%);
+    font-family: 'Jura', sans-serif;
     text-shadow: 2px 2px 8px chartreuse;
-    top: 20px;
-    opacity: .75;
-    padding-left: 25px;
+    font-size: 80px;
+    color: #fff;
 }
  
 #gameboard{
@@ -37,20 +40,23 @@ h1{
     display: block;
     width: 1000px;
     height: 500px;
+    margin-top: 20px;
 }
 
 #canvas-container{
     border: 1px solid white;
+    
 }
 
 .btn {
     padding: 10px;
+    border-radius: .5rem;
 }
 
 .gen {
     color: #fff;
     font: 1em sans-serif;
-    padding: 20px 0;
+    padding: 20px 0 10px 0;
 }
 
 .ext-link{
