@@ -19,9 +19,7 @@ runBtn.addEventListener('click', () => {
 
 restBtn.addEventListener('click', () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	clearInterval(window.setRunTime);
-	runBtn.setAttribute('data-run', true);
-	runBtn.innerText = 'Run';
+	resetRun();
 	generation = 0;
 	buildGrid();
 });
@@ -43,6 +41,7 @@ canvas.addEventListener(
 		isDrawing = true;
 		let x = e.pageX - elemLeft,
 			y = e.pageY - elemTop;
+		resetRun();
 		checkBoxesonClick(x, y, 'click');
 	},
 	false

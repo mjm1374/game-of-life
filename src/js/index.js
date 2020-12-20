@@ -98,6 +98,12 @@ function checkBoxesonClick(x, y, state) {
 	});
 }
 
+function resetRun() {
+	clearInterval(window.setRunTime);
+	runBtn.setAttribute('data-run', true);
+	runBtn.innerText = 'Run';
+}
+
 function debounce(func, wait, immediate) {
 	let timeout;
 	return function () {
