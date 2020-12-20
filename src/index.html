@@ -1,67 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game of life</title>
-    <!-- Primary Meta Tags -->
-    <meta name="title" content="lbx: Game of life">
-    <meta name="description" content="A javascript interpretation of Conway's game of Life">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Game of life</title>
+		<!-- Primary Meta Tags -->
+		<meta name="title" content="lbx: Game of life" />
+		<meta
+			name="description"
+			content="A javascript interpretation of Conway's game of Life"
+		/>
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://metatags.io/">
-    <meta property="og:title" content="lbx: Game of life">
-    <meta property="og:description" content="A javascript interpretation of Conway's game of Life">
-    <meta property="og:image" content="https://logikbox.com/life/img/life.jpg">
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://metatags.io/" />
+		<meta property="og:title" content="lbx: Game of life" />
+		<meta
+			property="og:description"
+			content="A javascript interpretation of Conway's game of Life"
+		/>
+		<meta
+			property="og:image"
+			content="https://logikbox.com/life/img/life.jpg"
+		/>
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://metatags.io/">
-    <meta property="twitter:title" content="lbx: Game of life">
-    <meta property="twitter:description" content="A javascript interpretation of Conway's game of Life">
-    <meta property="twitter:image" content="https://logikbox.com/life/img/life.jpg">
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://metatags.io/" />
+		<meta property="twitter:title" content="lbx: Game of life" />
+		<meta
+			property="twitter:description"
+			content="A javascript interpretation of Conway's game of Life"
+		/>
+		<meta
+			property="twitter:image"
+			content="https://logikbox.com/life/img/life.jpg"
+		/>
 
-    <link rel="apple-touch-icon" sizes="152x152" href="img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
-    <link rel="manifest" href="img/site.webmanifest">
-    <link rel="mask-icon" href="img/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Mr+Dafoe&family=Pacifico&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles/life.css">
+		<link
+			rel="apple-touch-icon"
+			sizes="152x152"
+			href="img/apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="img/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="img/favicon-16x16.png"
+		/>
+		<link rel="manifest" href="img/site.webmanifest" />
+		<link
+			rel="mask-icon"
+			href="img/safari-pinned-tab.svg"
+			color="#5bbad5"
+		/>
+		<meta name="msapplication-TileColor" content="#da532c" />
+		<meta name="theme-color" content="#ffffff" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Mr+Dafoe&family=Pacifico&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="./styles/life.css" />
+	</head>
+	<body>
+		<div class="hero">
+			<h1>Conway's Game of Life</h1>
+			<section id="gameboard">
+				<div class="container">
+					<canvas id="canvas-container"></canvas>
+				</div>
+			</section>
 
-</head>
-<body>
-    <div class="hero">
-        <h1>Conway's Game of Life</h1>
-        <section id="gameboard">
-            <div class="container">
-                <canvas id="canvas-container"></canvas>
-            </div>
-        </section>
+			<section id="tools">
+				<div class="container tools">
+					<div class="gen" id="gen"></div>
+					<button class="btn btn__step" data-step>Step</button>
+					<button class="btn isStopped" data-run="true">Run</button>
+					<button class="btn btn__rueset" data-reset>Reset</button>
+					<input type="radio" name="paint" value="true" checked />
+					Paint
+					<input type="radio" name="paint" value="false" /> Erase
+					<br />
+					<a
+						href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+						class="ext-link"
+						>What is this all about???</a
+					>
+				</div>
+			</section>
+			<footer>Built for Kaelen. &copy;<span id="year"></span></footer>
+		</div>
+	</body>
 
-        <section id="tools">
-            <div class="container tools">
-                <div class="gen" id="gen"></div>
-                <button class="btn btn__step" data-step>Step</button>
-                <button class="btn isStopped" data-run="true">Run</button>
-                <button class="btn btn__rueset" data-reset>Reset</button>
-                <input type="radio" name="paint" value="true" checked> Paint
-                <input type="radio" name="paint" value="false"> Erase
-                <br>
-                <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" class="ext-link">What is this all about???</a>
-            </div>
-
-        </section>
-        <footer>
-            Built for Kaelen.  &copy;<span id="year"></span>
-        </footer>
-    </div>
-    
-</body>
-    <script src="js/index.js"></script>
-    <script src="js/listeners.js"></script>
+	<script type="module" src="js/index.js"></script>
 </html>
