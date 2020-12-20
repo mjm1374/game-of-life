@@ -74,3 +74,7 @@ canvas.addEventListener(
 	},
 	false
 );
+
+window.addEventListener('resize', () => {
+	getWindowOffset();
+});

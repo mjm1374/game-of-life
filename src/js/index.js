@@ -2,8 +2,8 @@ const yearTag = document.getElementById('year');
 const year = null;
 let canvas = document.getElementById('canvas-container'),
 	ctx = canvas.getContext('2d'),
-	elemLeft = canvas.offsetLeft,
-	elemTop = canvas.offsetTop,
+	elemLeft = 0,
+	elemTop = 0,
 	x = 0,
 	y = 0,
 	id = 0,
@@ -12,6 +12,7 @@ let canvas = document.getElementById('canvas-container'),
 	canvasHeight = 500,
 	generation = 0,
 	boxes = [],
+	history = [],
 	isDrawing = false,
 	paint = true,
 	genTarget = document.getElementById('gen'),
@@ -47,6 +48,11 @@ class Box {
 	setPopulation(pop) {
 		this.population = pop;
 	}
+}
+
+function getWindowOffset() {
+	elemLeft = canvas.offsetLeft;
+	elemTop = canvas.offsetTop;
 }
 
 function buildGrid() {
@@ -199,5 +205,6 @@ function setGeneration(gen) {
 }
 
 document.fonts.ready.then(function () {
+	getWindowOffset();
 	buildGrid();
 });
