@@ -6,7 +6,7 @@
     padding: 0;
 }
 
-body{
+body {
     background-image: url('../img/JohnConway.jpg');
     background-size: cover;
     background-color: #000;
@@ -14,7 +14,7 @@ body{
     color:#fff;
 }
 
-h1{
+h1 {
     display: inline-block;
     position: relative;
     margin-bottom: 20px;
@@ -27,15 +27,13 @@ h1{
     font-size: 80px;
     color: #fff;
 }
- 
-#gameboard{
+
+#gameboard {
     display: block;
     width: 100vw;
- 
-    
 }
 
-.container{
+.container {
     margin: 0 auto;
     display: block;
     width: 1000px;
@@ -44,12 +42,12 @@ h1{
 }
 
 
-.container.tools{
+.container.tools {
     margin: 0 auto;
     height:200px;
 }
 
-#canvas-container{
+#canvas-container {
     border: 1px solid white;
     
 }
@@ -57,7 +55,6 @@ h1{
 .btn {
     padding: 10px;
     border-radius: .5rem;
-    
 }
 
 .isStopped{
@@ -75,18 +72,18 @@ h1{
     padding: 20px 0 10px 0;
 }
 
-.ext-link{
+.ext-link {
     color: white;
     padding: 20px 0;
     display: block;
     text-decoration: none;
 }
 
-.ext-link:hover{
+.ext-link:hover {
     text-decoration: underline;
 }
 
-footer{
+footer {
     color: #ececec;
     padding: 20px;
 }
