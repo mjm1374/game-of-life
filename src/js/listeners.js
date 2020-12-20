@@ -10,10 +10,10 @@ runBtn.addEventListener('click', () => {
 		window.setRunTime = setInterval(stepIteration, 50);
 		runBtn.setAttribute('data-run', false);
 		runBtn.innerText = 'Stop';
+		runBtn.classList.remove('isStopped');
+		runBtn.classList.add('isRunning');
 	} else {
-		clearInterval(window.setRunTime);
-		runBtn.setAttribute('data-run', true);
-		runBtn.innerText = 'Run';
+		resetRun();
 	}
 });
 

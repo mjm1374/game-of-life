@@ -57,8 +57,18 @@ h1{
 .btn {
     padding: 10px;
     border-radius: .5rem;
+    
 }
 
+.isStopped{
+    background-color: forestgreen;
+    color: #fff;
+}
+
+.isRunning{
+    background-color: darkred;
+    color: #fff;
+}
 .gen {
     color: #fff;
     font: 1em sans-serif;

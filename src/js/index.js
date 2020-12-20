@@ -101,6 +101,8 @@ function checkBoxesonClick(x, y, state) {
 function resetRun() {
 	clearInterval(window.setRunTime);
 	runBtn.setAttribute('data-run', true);
+	runBtn.classList.remove('isRunning');
+	runBtn.classList.add('isStopped');
 	runBtn.innerText = 'Run';
 }
 
