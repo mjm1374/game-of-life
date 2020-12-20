@@ -36,6 +36,19 @@ export class History {
 	}
 }
 
+export class Seed {
+	name = '';
+	seed = [];
+
+	constructor(name, seed) {
+		this.name = name;
+		this.seed = seed;
+	}
+
+	setName(name) {
+		this.name = name;
+	}
+}
 export default {
 	Box,
 	History,

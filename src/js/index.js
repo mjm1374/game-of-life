@@ -30,6 +30,7 @@ let canvas = vars.canvas,
 	stepBtn = vars.stepBtn,
 	runBtn = vars.runBtn,
 	restBtn = vars.restBtn,
+	seedBtn = vars.seedBtn,
 	paintRadios = vars.paintRadios;
 
 yearTag.innerText = new Date().getFullYear();
@@ -41,12 +42,14 @@ ctx.canvas.height = canvasHeight;
  * Poplulat the array with the default values
  */
 
-function buildGrid() {
+function resetGrid() {
 	x = 0;
 	y = 0;
 	id = 0;
 	boxes = [];
-
+	history = [];
+	setGeneration(generation);
+	addHistory(history, generation);
 	while (x < canvasWidth) {
 		while (y < canvasHeight) {
 			let box = new Box(id, x, y, false, '#57b816', offset, 0);
@@ -71,15 +74,22 @@ function updateData(gridItem, pop) {
 	newbox.population = pop;
 	boxes.splice(newbox.id, 1, newbox);
 	gridItem.fill == true ? (print = 1) : (print = 0);
-	let thisHistory = history[generation - 1];
-	thisHistory.fingerprint.push(print);
+}
+
+function saveHistory(boxes, gen) {
+	if (gen === 0) seedBtn.disabled = false;
+	let thisHistory = history[gen];
+	boxes.forEach((box) => {
+		box.fill == true ? (print = 1) : (print = 0);
+		thisHistory.fingerprint.push(print);
+	});
 }
 
 function stepIteration() {
-	setGeneration();
-	history.push(new History(generation));
-	let historyObj = history[generation - 1];
-
+	saveHistory(boxes, generation);
+	generation++;
+	setGeneration(generation);
+	addHistory(history, generation);
 	let fill = false;
 	boxes.forEach((box) => {
 		let localPopulation = checkPopulated(boxes, box);
@@ -104,6 +114,10 @@ function stepIteration() {
 	}
 }
 
+function addHistory(history, gen) {
+	history.push(new History(gen));
+}
+
 function updateGrid() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	boxes.forEach((box) => {
@@ -115,14 +129,13 @@ function updateGrid() {
 }
 
 function setGeneration() {
-	generation++;
 	genTarget.innerText = `Generation: ${generation}`;
 }
 
 document.fonts.ready.then(function () {
 	elemLeft = getWindowOffset().left;
 	elemTop = getWindowOffset().top;
-	buildGrid();
+	resetGrid();
 });
 
 // Event listeners
@@ -148,7 +161,12 @@ restBtn.addEventListener('click', () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	resetRun(runBtn);
 	generation = 0;
-	buildGrid();
+	resetGrid();
+});
+
+seedBtn.addEventListener('click', () => {
+	let seed = history[0];
+	console.log(seed.fingerprint);
 });
 
 for (let i = 0, len = paintRadios.length; i < len; i++) {

@@ -7,6 +7,7 @@ export const stepBtn = document.querySelector('[data-step]');
 export const runBtn = document.querySelector('[data-run]');
 export const restBtn = document.querySelector('[data-reset]');
 export const paintRadios = document.querySelectorAll('input[name="paint"]');
+export const seedBtn = document.querySelector('[data-seed]');
 
 // starting config
 const speed = 50;
@@ -39,4 +40,5 @@ export default {
 	runBtn,
 	restBtn,
 	paintRadios,
+	seedBtn,
 };
