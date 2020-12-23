@@ -1,5 +1,5 @@
-import { History } from './models.js';
-import { seedBtn } from './vars.js';
+import { History, Seed } from './models.js';
+import { seedBtn, LOCAL_STORAGE_SEEDS } from './vars.js';
 
 export function updateHistory(history, boxes, gen) {
 	if (gen === 0) seedBtn.disabled = false;
@@ -15,16 +15,34 @@ export function addHistory(history, gen) {
 }
 
 export function saveSeed(history) {
-	history.setName = 'seed' + new Date();
 	console.log(history);
-	let seed = convertHistoryToJSON(history);
+	let seed = new Seed('seed' + Date.now(), history[0].fingerprint);
+	console.log('XXX', seed);
+	seed = convertHistoryToJSON(seed);
+	setLocalStorage(seed);
 	console.log(seed);
 }
 
-export default { updateHistory, addHistory, saveSeed };
+export function getSeeds() {
+	return getLocalStorage();
+}
+
+export default { updateHistory, addHistory, saveSeed, getSeeds };
 
 //private
 
-function convertHistoryToJSON(history) {
-	return JSON.stringify(history);
+function convertHistoryToJSON(seeds) {
+	return JSON.stringify(seeds);
+}
+
+function parseHistoryToJSON(seeds) {
+	return JSON.parse(seeds);
+}
+
+function getLocalStorage() {
+	return localStorage.getItem(LOCAL_STORAGE_SEEDS);
+}
+
+function setLocalStorage(value) {
+	localStorage.setItem(LOCAL_STORAGE_SEEDS, value);
 }

@@ -1,6 +1,6 @@
 import * as vars from './vars.js';
 import { Box } from './models.js';
-import { saveSeed, addHistory, updateHistory } from './history.js';
+import { saveSeed, addHistory, updateHistory, getSeeds } from './history.js';
 import {
 	getWindowOffset,
 	checkPopulated,
@@ -50,6 +50,7 @@ function resetGrid() {
 	boxes = [];
 	history = [];
 	setGeneration(generation);
+	getSeeds();
 	addHistory(history, generation);
 	while (x < canvasWidth) {
 		while (y < canvasHeight) {
@@ -154,7 +155,7 @@ restBtn.addEventListener('click', () => {
 
 seedBtn.addEventListener('click', () => {
 	let seed = history[0];
-	saveSeed(history[0]);
+	saveSeed(history);
 });
 
 for (let i = 0, len = paintRadios.length; i < len; i++) {
