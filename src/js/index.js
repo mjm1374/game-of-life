@@ -1,5 +1,6 @@
 import * as vars from './vars.js';
-import { Box, History } from './models.js';
+import { Box } from './models.js';
+import { saveSeed, addHistory, updateHistory } from './history.js';
 import {
 	getWindowOffset,
 	checkPopulated,
@@ -76,17 +77,8 @@ function updateData(gridItem, pop) {
 	gridItem.fill == true ? (print = 1) : (print = 0);
 }
 
-function saveHistory(boxes, gen) {
-	if (gen === 0) seedBtn.disabled = false;
-	let thisHistory = history[gen];
-	boxes.forEach((box) => {
-		box.fill == true ? (print = 1) : (print = 0);
-		thisHistory.fingerprint.push(print);
-	});
-}
-
 function stepIteration() {
-	saveHistory(boxes, generation);
+	updateHistory(history, boxes, generation);
 	generation++;
 	setGeneration(generation);
 	addHistory(history, generation);
@@ -112,10 +104,6 @@ function stepIteration() {
 	} else {
 		resetRun(runBtn);
 	}
-}
-
-function addHistory(history, gen) {
-	history.push(new History(gen));
 }
 
 function updateGrid() {
@@ -166,7 +154,7 @@ restBtn.addEventListener('click', () => {
 
 seedBtn.addEventListener('click', () => {
 	let seed = history[0];
-	console.log(seed.fingerprint);
+	saveSeed(history[0]);
 });
 
 for (let i = 0, len = paintRadios.length; i < len; i++) {
