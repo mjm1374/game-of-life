@@ -13,14 +13,17 @@ export function updateHistory(history, boxes, gen) {
 export function addHistory(history, gen) {
 	history.push(new History(gen));
 }
-
+/// |
+///  |
+//   \/
+//seeds need to be set to an array and passed in. this is in works and your drunk so we are leaving you a note. Seeds to be parsed to an object with individual seeds in them nad then save out to JSON
 export function saveSeed(history) {
-	console.log(history);
+	let existingSeeds = parseSeedFromJSON(getLocalStorage());
+	if (existingSeeds == undefined) existingSeeds = [];
+	console.log(existingSeeds);
 	let seed = new Seed('seed' + Date.now(), history[0].fingerprint);
-	console.log('XXX', seed);
-	seed = convertHistoryToJSON(seed);
+	seed = convertSeedToJSON(seed);
 	setLocalStorage(seed);
-	console.log(seed);
 }
 
 export function getSeeds() {
@@ -31,11 +34,11 @@ export default { updateHistory, addHistory, saveSeed, getSeeds };
 
 //private
 
-function convertHistoryToJSON(seeds) {
+function convertSeedToJSON(seeds) {
 	return JSON.stringify(seeds);
 }
 
-function parseHistoryToJSON(seeds) {
+function parseSeedFromJSON(seeds) {
 	return JSON.parse(seeds);
 }
 

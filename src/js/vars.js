@@ -8,10 +8,10 @@ export const runBtn = document.querySelector('[data-run]');
 export const restBtn = document.querySelector('[data-reset]');
 export const paintRadios = document.querySelectorAll('input[name="paint"]');
 export const seedBtn = document.querySelector('[data-seed]');
-export const LOCAL_STORAGE_SEEDS = 'seeds';
 
 // starting config
-const speed = 50;
+export const SPEED = 50;
+export const LOCAL_STORAGE_SEEDS = 'seeds';
 export let elemLeft = 0;
 export let elemTop = 0;
 export let x = 0;
@@ -26,7 +26,7 @@ export default {
 	yearTag,
 	canvas,
 	ctx,
-	speed,
+	SPEED,
 	elemLeft,
 	elemTop,
 	x,

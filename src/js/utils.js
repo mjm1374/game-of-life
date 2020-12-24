@@ -20,32 +20,52 @@ export function debounce(func, wait, immediate) {
 	};
 }
 
-export function checkPopulated(boxes, box) {
-	const boxId = box.id;
-	const colPos = box.y;
-	const rowPos = box.x;
-	const testGridCol = [];
-	const testGrid = [];
-	const searchCoord = [-Math.abs(vars.offset), 0, vars.offset];
-	let population;
-
-	for (let i = 0; i < 3; i++) {
-		let searchCol = colPos + searchCoord[i];
-		let thisCol = boxes.filter((box) => box.y == searchCol);
-		testGridCol.push(...thisCol);
+export function checkPopulation(grid, box, x, y) {
+	const colCnt = vars.canvasWidth / vars.offset - 1;
+	const rowCnt = vars.canvasHeight / vars.offset - 1;
+	let population = 0;
+	// this would be fo a 2d array
+	for (let i = -1; i < 2; i++) {
+		for (let j = -1; j < 2; j++) {
+			let thisCol = (x + i + colCnt) % colCnt;
+			let thisRow = (y + j + rowCnt) % rowCnt;
+			let neighbor = grid[thisCol][thisRow];
+			population += neighbor.fill;
+		}
 	}
-
-	for (let i = 0; i < 3; i++) {
-		let searchRow = rowPos + searchCoord[i];
-		let thisCol = testGridCol.filter((box) => box.x == searchRow);
-		testGrid.push(...thisCol);
-	}
-
-	const center = testGrid.find((box) => box.id === boxId);
-	testGrid.splice(testGrid.indexOf(center), 1);
-	population = testGrid.reduce((a, b) => ({ fill: a.fill + b.fill }));
-	return population.fill;
+	let center = grid[x][y];
+	population -= center.fill;
+	return population;
 }
+
+// export function checkPopulation(boxes, grid, box) {
+// 	const boxId = box.id;
+// 	const colPos = box.y;
+// 	const rowPos = box.x;
+// 	const testGridCol = [];
+// 	const testGrid = [];
+// 	const colCnt = vars.canvasWidth / vars.offset;
+// 	const rowCnt = vars.canvasHeight / vars.offset;
+// 	const searchCoord = [-Math.abs(vars.offset), 0, vars.offset];
+// 	let population = 0;
+
+// 	for (let i = 0; i < 3; i++) {
+// 		let searchCol = colPos + searchCoord[i];
+// 		let thisCol = boxes.filter((box) => box.y == searchCol);
+// 		testGridCol.push(...thisCol);
+// 	}
+
+// 	for (let i = 0; i < 3; i++) {
+// 		let searchRow = rowPos + searchCoord[i];
+// 		let thisCol = testGridCol.filter((box) => box.x == searchRow);
+// 		testGrid.push(...thisCol);
+// 	}
+
+// 	const center = testGrid.find((box) => box.id === boxId);
+// 	testGrid.splice(testGrid.indexOf(center), 1);
+// 	population = testGrid.reduce((a, b) => ({ fill: a.fill + b.fill }));
+// 	return population.fill;
+// }
 
 export function resetRun(runBtn) {
 	clearInterval(window.setRunTime);

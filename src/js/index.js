@@ -3,7 +3,7 @@ import { Box } from './models.js';
 import { saveSeed, addHistory, updateHistory, getSeeds } from './history.js';
 import {
 	getWindowOffset,
-	checkPopulated,
+	checkPopulation,
 	resetRun,
 	debounce,
 	checkBoxesOnClick,
@@ -25,6 +25,8 @@ let canvas = vars.canvas,
 	generation = vars.generation,
 	boxes = [],
 	history = [],
+	seeds = [],
+	grid,
 	isDrawing = false,
 	paint = true,
 	genTarget = vars.genTarget,
@@ -39,13 +41,23 @@ yearTag.innerText = new Date().getFullYear();
 ctx.canvas.width = canvasWidth;
 ctx.canvas.height = canvasHeight;
 
+function create2DArray(cols, rows) {
+	let arr = new Array(cols);
+	for (let i = 0; i < arr.length; i++) {
+		arr[i] = new Array(rows);
+	}
+	return arr;
+}
+
 /**
  * Poplulat the array with the default values
  */
-
 function resetGrid() {
 	x = 0;
 	y = 0;
+	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
+	let x2 = 0;
+	let y2 = 0;
 	id = 0;
 	boxes = [];
 	history = [];
@@ -55,13 +67,17 @@ function resetGrid() {
 	while (x < canvasWidth) {
 		while (y < canvasHeight) {
 			let box = new Box(id, x, y, false, '#57b816', offset, 0);
-			y = y + offset;
-			id++;
 			boxes.push(box);
+			grid[x2][y2] = box;
+			y = y + offset;
+			y2 += 1;
+			id++;
 			drawGrid(box);
 		}
 		y = 0;
+		y2 = 0;
 		x = x + offset;
+		x2 += 1;
 	}
 }
 
@@ -79,17 +95,27 @@ function updateData(gridItem, pop) {
 }
 
 function stepIteration() {
+	//console.table(grid[1][1]);
 	updateHistory(history, boxes, generation);
 	generation++;
 	setGeneration(generation);
 	addHistory(history, generation);
 	let fill = false;
-	boxes.forEach((box) => {
-		let localPopulation = checkPopulated(boxes, box);
-		box.population = localPopulation;
-		updateData(box, localPopulation);
-	});
-	//console.log(historyObj.fingerprint);
+	// boxes.forEach((box) => {
+	// 	let localPopulation = checkPopulation(boxes, box);
+	// 	box.population = localPopulation;
+	// 	updateData(box, localPopulation);
+	// });
+
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
+			let box = grid[i][j];
+			let localPopulation = checkPopulation(grid, box, i, j);
+			box.population = localPopulation;
+			updateData(box, localPopulation);
+		}
+	}
+
 	let isStatic = false;
 	let historyObj1 = history[generation - 1];
 	let historyObj2 = history[generation - 2];
@@ -109,12 +135,22 @@ function stepIteration() {
 
 function updateGrid() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	boxes.forEach((box) => {
-		if (box.fill === false && box.population === 3) box.fill = true;
-		if ((box.fill === true && box.population < 2) || box.population > 3)
-			box.fill = false;
-		drawGrid(box);
-	});
+	// boxes.forEach((box) => {
+	// 	if (box.fill === false && box.population === 3) box.fill = true;
+	// 	if ((box.fill === true && box.population < 2) || box.population > 3)
+	// 		box.fill = false;
+	// 	drawGrid(box);
+	// });
+
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
+			let box = grid[i][j];
+			if (box.fill === false && box.population === 3) box.fill = true;
+			if ((box.fill === true && box.population < 2) || box.population > 3)
+				box.fill = false;
+			drawGrid(box);
+		}
+	}
 }
 
 function setGeneration() {
@@ -136,7 +172,7 @@ stepBtn.addEventListener('click', () => {
 
 runBtn.addEventListener('click', () => {
 	if (runBtn.getAttribute('data-run') == 'true') {
-		window.setRunTime = setInterval(stepIteration, vars.speed);
+		window.setRunTime = setInterval(stepIteration, vars.SPEED);
 		runBtn.setAttribute('data-run', false);
 		runBtn.innerText = 'Stop';
 		runBtn.classList.remove('isStopped');
