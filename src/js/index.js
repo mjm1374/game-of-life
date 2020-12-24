@@ -56,28 +56,22 @@ function resetGrid() {
 	x = 0;
 	y = 0;
 	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
-	let x2 = 0;
-	let y2 = 0;
 	id = 0;
 	boxes = [];
 	history = [];
 	setGeneration(generation);
 	getSeeds();
 	addHistory(history, generation);
-	while (x < canvasWidth) {
-		while (y < canvasHeight) {
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
 			let box = new Box(id, x, y, false, '#57b816', offset, 0);
-			boxes.push(box);
-			grid[x2][y2] = box;
+			grid[i][j] = box;
 			y = y + offset;
-			y2 += 1;
 			id++;
 			drawGrid(box);
 		}
 		y = 0;
-		y2 = 0;
 		x = x + offset;
-		x2 += 1;
 	}
 }
 
@@ -86,33 +80,31 @@ function resetGrid() {
  * @param {*} gridItem
  * @param {*} pop
  */
-function updateData(gridItem, pop) {
+function updateData(gridItem, pop, x, y) {
 	let print = null;
-	let newbox = boxes.find((box) => box.id === gridItem.id);
+	let newbox = grid[x][y];
 	newbox.population = pop;
 	boxes.splice(newbox.id, 1, newbox);
-	gridItem.fill == true ? (print = 1) : (print = 0);
+	gridItem.alive == true ? (print = 1) : (print = 0);
 }
 
 function stepIteration() {
 	//console.table(grid[1][1]);
-	updateHistory(history, boxes, generation);
+	console.trace();
+	updateHistory(history, grid, generation);
 	generation++;
 	setGeneration(generation);
 	addHistory(history, generation);
 	let fill = false;
-	// boxes.forEach((box) => {
-	// 	let localPopulation = checkPopulation(boxes, box);
-	// 	box.population = localPopulation;
-	// 	updateData(box, localPopulation);
-	// });
-
+	console.log('xxx');
 	for (let i = 0; i < grid.length; i++) {
+		console.log('----->', i);
 		for (let j = 0; j < grid[i].length; j++) {
 			let box = grid[i][j];
-			let localPopulation = checkPopulation(grid, box, i, j);
+			console.log(i, j);
+			let localPopulation = checkPopulation(grid, i, j);
 			box.population = localPopulation;
-			updateData(box, localPopulation);
+			updateData(box, localPopulation, i, j);
 		}
 	}
 
@@ -135,19 +127,16 @@ function stepIteration() {
 
 function updateGrid() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	// boxes.forEach((box) => {
-	// 	if (box.fill === false && box.population === 3) box.fill = true;
-	// 	if ((box.fill === true && box.population < 2) || box.population > 3)
-	// 		box.fill = false;
-	// 	drawGrid(box);
-	// });
 
 	for (let i = 0; i < grid.length; i++) {
 		for (let j = 0; j < grid[i].length; j++) {
 			let box = grid[i][j];
-			if (box.fill === false && box.population === 3) box.fill = true;
-			if ((box.fill === true && box.population < 2) || box.population > 3)
-				box.fill = false;
+			if (box.alive === false && box.population === 3) box.alive = true;
+			if (
+				(box.alive === true && box.population < 2) ||
+				box.population > 3
+			)
+				box.alive = false;
 			drawGrid(box);
 		}
 	}
@@ -211,7 +200,7 @@ canvas.addEventListener(
 		let x = e.pageX - elemLeft,
 			y = e.pageY - elemTop;
 		resetRun(runBtn);
-		checkBoxesOnClick(boxes, x, y, 'click', paint);
+		checkBoxesOnClick(grid, x, y, 'click', paint);
 	},
 	false
 );
@@ -238,7 +227,7 @@ canvas.addEventListener(
 		if (isDrawing) {
 			let x = e.pageX - elemLeft,
 				y = e.pageY - elemTop;
-			debounce(checkBoxesOnClick(boxes, x, y, 'paint', paint), 250);
+			debounce(checkBoxesOnClick(grid, x, y, 'paint', paint), 250);
 		}
 	},
 	false
