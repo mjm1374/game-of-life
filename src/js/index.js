@@ -23,6 +23,7 @@ let canvas = vars.canvas,
 	canvasWidth = vars.canvasWidth,
 	canvasHeight = vars.canvasHeight,
 	generation = vars.generation,
+	addGen = true,
 	history = [],
 	seeds = [],
 	grid,
@@ -56,6 +57,7 @@ function resetGrid() {
 	y = 0;
 	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
 	id = 0;
+	addGen = true;
 	history = [];
 	seedBtn.disabled = false;
 	setGeneration(generation);
@@ -89,7 +91,7 @@ function updateData(gridItem, pop, x, y) {
 
 function stepIteration() {
 	updateHistory(history, grid, generation);
-	generation++;
+	if (addGen) generation++;
 	setGeneration(generation);
 	addHistory(history, generation);
 
@@ -102,43 +104,25 @@ function stepIteration() {
 		}
 	}
 
-	let isStatic = false;
-	let historyObj1 = history[generation - 1];
-	let historyObj2 = history[generation - 2];
-	let historyObj3 = history[generation - 3];
-	let situation = null;
+	let isStatic = null;
 
-	if (generation == 2) {
-		isStatic = checkStatic(
-			historyObj1.fingerprint,
-			historyObj2.fingerprint
-		);
-		situation = 2;
+	if (generation >= 2) {
+		isStatic = checkStatic(history, generation);
 	}
 
-	if (generation >= 3) {
-		isStatic = checkStatic(
-			historyObj1.fingerprint,
-			historyObj2.fingerprint,
-			historyObj3.fingerprint
-		);
-		situation = 3;
-	}
-
-	console.log('situation', situation);
-
-	if (!isStatic) {
+	if (isStatic === null) {
 		updateGrid();
-	} else if (situation == 3) {
+	} else if (isStatic == 'ocilating') {
 		updateGrid();
-		stopGen(situation);
+		stopGen();
 	} else {
 		resetRun(runBtn);
 	}
 }
 
 function stopGen(situation) {
-	console.log('situation', situation);
+	addGen = false;
+	resetRun(runBtn, false);
 }
 
 function updateGrid(situation) {
@@ -182,6 +166,7 @@ runBtn.addEventListener('click', () => {
 		runBtn.innerText = 'Stop';
 		runBtn.classList.remove('isStopped');
 		runBtn.classList.add('isRunning');
+		addGen = true;
 	} else {
 		resetRun(runBtn);
 	}
