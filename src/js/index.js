@@ -105,21 +105,43 @@ function stepIteration() {
 	let isStatic = false;
 	let historyObj1 = history[generation - 1];
 	let historyObj2 = history[generation - 2];
-	if (generation >= 2) {
+	let historyObj3 = history[generation - 3];
+	let situation = null;
+
+	if (generation == 2) {
 		isStatic = checkStatic(
 			historyObj1.fingerprint,
 			historyObj2.fingerprint
 		);
+		situation = 2;
 	}
+
+	if (generation >= 3) {
+		isStatic = checkStatic(
+			historyObj1.fingerprint,
+			historyObj2.fingerprint,
+			historyObj3.fingerprint
+		);
+		situation = 3;
+	}
+
+	console.log('situation', situation);
 
 	if (!isStatic) {
 		updateGrid();
+	} else if (situation == 3) {
+		updateGrid();
+		stopGen(situation);
 	} else {
 		resetRun(runBtn);
 	}
 }
 
-function updateGrid() {
+function stopGen(situation) {
+	console.log('situation', situation);
+}
+
+function updateGrid(situation) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	for (let i = 0; i < grid.length; i++) {
@@ -228,5 +250,6 @@ canvas.addEventListener(
 );
 
 window.addEventListener('resize', () => {
-	getWindowOffset();
+	elemLeft = getWindowOffset().left;
+	elemTop = getWindowOffset().top;
 });

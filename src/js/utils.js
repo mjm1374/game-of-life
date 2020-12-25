@@ -84,12 +84,16 @@ export function drawGrid(box) {
 	vars.ctx.restore();
 }
 
-export function checkStatic(a, b) {
+export function checkStatic(a, b, c = null) {
 	return (
-		Array.isArray(a) &&
-		Array.isArray(b) &&
-		a.length === b.length &&
-		a.every((val, index) => val === b[index])
+		(Array.isArray(a) &&
+			Array.isArray(b) &&
+			a.length === b.length &&
+			a.every((val, index) => val === b[index])) ||
+		(Array.isArray(a) &&
+			Array.isArray(c) &&
+			a.length === c.length &&
+			a.every((val, index) => val === c[index]))
 	);
 }
 
