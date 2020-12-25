@@ -17,24 +17,18 @@ export function addHistory(history, gen) {
 	history.push(new History(gen));
 }
 
-/// |
-///  |
-//   \/
-//seeds need to be set to an array and passed in. this is in works and your drunk so we are leaving you a note.
-// Seeds to be parsed to an object with individual seeds in them and then save out to JSON
 export function saveSeed(history, seeds) {
-	let existingSeeds = parseSeedFromJSON(getLocalStorage());
+	seedBtn.disabled = true;
+	let existingSeeds = parseSeedFromJSON(getLocalStorageSeeds());
 	if (existingSeeds == undefined) existingSeeds = [];
-	console.log(existingSeeds);
 	let seed = new Seed('seed' + Date.now(), history[0].fingerprint);
 	seeds.push(seed);
-	console.log(existingSeeds);
-	seed = convertSeedToJSON(seed);
-	setLocalStorage(seed);
+	seeds = convertSeedToJSON(seeds);
+	setLocalStorageSeeds(seeds);
 }
 
 export function getSeeds() {
-	return getLocalStorage();
+	return getLocalStorageSeeds();
 }
 
 export default { updateHistory, addHistory, saveSeed, getSeeds };
@@ -49,10 +43,10 @@ function parseSeedFromJSON(seeds) {
 	return JSON.parse(seeds);
 }
 
-function getLocalStorage() {
+function getLocalStorageSeeds() {
 	return localStorage.getItem(LOCAL_STORAGE_SEEDS);
 }
 
-function setLocalStorage(value) {
+function setLocalStorageSeeds(value) {
 	localStorage.setItem(LOCAL_STORAGE_SEEDS, value);
 }

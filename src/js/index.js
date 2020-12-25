@@ -57,6 +57,7 @@ function resetGrid() {
 	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
 	id = 0;
 	history = [];
+	seedBtn.disabled = false;
 	setGeneration(generation);
 	getSeeds();
 	addHistory(history, generation);
