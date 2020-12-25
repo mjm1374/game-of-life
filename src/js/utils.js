@@ -28,7 +28,6 @@ export function checkPopulation(grid, x, y) {
 		for (let j = -1; j < 2; j++) {
 			let thisCol = (x + i + colCnt) % colCnt;
 			let thisRow = (y + j + rowCnt) % rowCnt;
-			console.log(x, y);
 			let neighbor = grid[thisCol][thisRow];
 			population += neighbor.alive;
 		}
@@ -100,14 +99,14 @@ export function checkStatic(a, b) {
 function flipColor(grid, x, y) {
 	let newbox = grid[x][y];
 	newbox.alive ? (newbox.alive = false) : (newbox.alive = true);
-	grid.splice(newbox.id, 1, newbox);
-	drawGrid(newbox);
+	grid[x][y] = newbox;
+	debounce(drawGrid(newbox), 5000);
 }
 
 // adds and subtracts to the data set
 function paintColor(grid, x, y, paint) {
 	let newbox = grid[x][y];
 	paint == true ? (newbox.alive = true) : (newbox.alive = false);
-	grid.splice(newbox.id, 1, newbox);
+	grid[x][y] = newbox;
 	debounce(drawGrid(newbox), 5000);
 }

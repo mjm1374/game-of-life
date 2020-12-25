@@ -23,7 +23,6 @@ let canvas = vars.canvas,
 	canvasWidth = vars.canvasWidth,
 	canvasHeight = vars.canvasHeight,
 	generation = vars.generation,
-	boxes = [],
 	history = [],
 	seeds = [],
 	grid,
@@ -57,7 +56,6 @@ function resetGrid() {
 	y = 0;
 	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
 	id = 0;
-	boxes = [];
 	history = [];
 	setGeneration(generation);
 	getSeeds();
@@ -84,24 +82,19 @@ function updateData(gridItem, pop, x, y) {
 	let print = null;
 	let newbox = grid[x][y];
 	newbox.population = pop;
-	boxes.splice(newbox.id, 1, newbox);
+	grid[x][y] = newbox;
 	gridItem.alive == true ? (print = 1) : (print = 0);
 }
 
 function stepIteration() {
-	//console.table(grid[1][1]);
-	console.trace();
 	updateHistory(history, grid, generation);
 	generation++;
 	setGeneration(generation);
 	addHistory(history, generation);
-	let fill = false;
-	console.log('xxx');
+
 	for (let i = 0; i < grid.length; i++) {
-		console.log('----->', i);
 		for (let j = 0; j < grid[i].length; j++) {
 			let box = grid[i][j];
-			console.log(i, j);
 			let localPopulation = checkPopulation(grid, i, j);
 			box.population = localPopulation;
 			updateData(box, localPopulation, i, j);
@@ -180,7 +173,7 @@ restBtn.addEventListener('click', () => {
 
 seedBtn.addEventListener('click', () => {
 	let seed = history[0];
-	saveSeed(history);
+	saveSeed(history, seeds);
 });
 
 for (let i = 0, len = paintRadios.length; i < len; i++) {
