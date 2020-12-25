@@ -1,6 +1,7 @@
 import * as vars from './vars.js';
 import { Box } from './models.js';
-import { saveSeed, addHistory, updateHistory, getSeeds } from './history.js';
+import { getSeeds, saveSeed } from './seed.js';
+import { addHistory, updateHistory } from './history.js';
 import {
 	getWindowOffset,
 	checkPopulation,
@@ -59,7 +60,7 @@ function resetGrid() {
 	id = 0;
 	addGen = true;
 	history = [];
-	seedBtn.disabled = false;
+	seedBtn.disabled = true;
 	setGeneration(generation);
 	getSeeds();
 	addHistory(history, generation);

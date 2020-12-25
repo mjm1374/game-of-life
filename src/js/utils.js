@@ -133,3 +133,23 @@ function paintColor(grid, x, y, paint) {
 	grid[x][y] = newbox;
 	debounce(drawGrid(newbox), 5000);
 }
+
+/* Make and element
+    elem: string {required} -  type of DOM element you want to create
+    cssClasses: string {optional} -  can be comma deliminated to attach multiple classes
+    elemID: string {optional} - Element ID is needed
+*/
+export function makeElement(elem, cssClasses, elemID) {
+	let theClasses = [];
+	if (cssClasses != undefined) theClasses = cssClasses.split(', ');
+	if (typeof elem !== 'undefined' && elem.trim() !== '') {
+		const newElem = document.createElement(elem);
+		if (theClasses.length > 0 && theClasses[0] !== '') {
+			theClasses.forEach((cssClass) => newElem.classList.add(cssClass));
+		}
+		if (elemID != undefined && elemID != '')
+			newElem.setAttribute('id', elemID);
+
+		return newElem;
+	}
+}

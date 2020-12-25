@@ -83,11 +83,17 @@
 					<div class="gen" id="gen"></div>
 					<button class="btn btn__step" data-step>Step</button>
 					<button class="btn isStopped" data-run="true">Run</button>
-                    <button class="btn btn__reset" data-reset>Reset</button>
-                    <button class="btn btn__seed" data-seed disabled>Save Seed</button>
+					<button class="btn btn__reset" data-reset>Reset</button>
+					<button class="btn btn__seed" data-seed disabled>
+						Save Seed
+					</button>
 					<input type="radio" name="paint" value="true" checked />
 					Paint
 					<input type="radio" name="paint" value="false" /> Erase
+
+					<select name="seeds" id="seeds" data-selectSeed>
+						<option value="" selected>Saved Seeds</option>
+					</select>
 					<br />
 					<a
 						href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
