@@ -1,12 +1,17 @@
 import { Seed } from './models.js';
 import { makeElement } from './utils.js';
-import { seedBtn, seedSelect, LOCAL_STORAGE_SEEDS } from './vars.js';
+import {
+	seedBtn,
+	seedSelect,
+	seedNameInput,
+	LOCAL_STORAGE_SEEDS,
+} from './vars.js';
 
 export function getSeeds() {
-	let savedSeeds = parseSeedFromJSON(getLocalStorageSeeds());
-
+	let seeds = checkForLocalSeeds();
 	let i = 0;
-	savedSeeds.forEach((seed) => {
+	seedSelect.innerHTML = '';
+	seeds.forEach((seed) => {
 		let SeeedListItem = makeElement('option', 'seedlist');
 		SeeedListItem.value = i;
 		SeeedListItem.text = seed.name;
@@ -15,19 +20,23 @@ export function getSeeds() {
 	});
 }
 
-export function saveSeed(history, seeds) {
+export function saveSeed(history) {
 	seedBtn.disabled = true;
-	let existingSeeds = parseSeedFromJSON(getLocalStorageSeeds());
-	if (existingSeeds == undefined) existingSeeds = [];
+	let seeds = checkForLocalSeeds();
+	console.log(seeds);
+	if (seeds == undefined) seeds = [];
 	let seed = new Seed('seed' + Date.now(), history[0].fingerprint);
 	seeds.push(seed);
+	console.log(seeds);
 	seeds = convertSeedToJSON(seeds);
 	setLocalStorageSeeds(seeds);
+	getSeeds();
 }
 
 export function loadSeed(seed) {
 	let savedSeeds = parseSeedFromJSON(getLocalStorageSeeds());
 	let updateSeed = savedSeeds[seed];
+	seedNameInput.value = updateSeed.name;
 	console.log(updateSeed);
 }
 
@@ -50,8 +59,16 @@ function setLocalStorageSeeds(value) {
 }
 
 seedSelect.addEventListener('change', function () {
-	console.log('changed', this.value);
 	loadSeed(this.value);
 });
+
+function checkForLocalSeeds() {
+	let seeds = getLocalStorageSeeds();
+	if (seeds.length > 0) {
+		return parseSeedFromJSON(seeds);
+	} else {
+		return [];
+	}
+}
 
 export default { saveSeed, getSeeds };
