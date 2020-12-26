@@ -2,17 +2,17 @@ export class Box {
 	id = 0;
 	x = 0;
 	y = 0;
-	fill = false;
+	alive = false;
 	color = '#57b816';
 	width = 20;
 	height = 20;
 	population = 0;
 
-	constructor(id, x, y, fill, color, offset, population) {
+	constructor(id, x, y, alive, color, offset, population) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
-		this.fill = fill;
+		this.alive = alive;
 		this.width = offset;
 		this.height = offset;
 		this.population = population;
@@ -36,6 +36,19 @@ export class History {
 	}
 }
 
+export class Seed {
+	name = '';
+	seed = [];
+
+	constructor(name, seed) {
+		this.name = name;
+		this.seed = seed;
+	}
+
+	setName(name) {
+		this.name = name;
+	}
+}
 export default {
 	Box,
 	History,

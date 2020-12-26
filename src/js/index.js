@@ -1,8 +1,10 @@
 import * as vars from './vars.js';
-import { Box, History } from './models.js';
+import { Box } from './models.js';
+import { getSeeds, saveSeed } from './seed.js';
+import { addHistory, updateHistory } from './history.js';
 import {
 	getWindowOffset,
-	checkPopulated,
+	checkPopulation,
 	resetRun,
 	debounce,
 	checkBoxesOnClick,
@@ -22,14 +24,17 @@ let canvas = vars.canvas,
 	canvasWidth = vars.canvasWidth,
 	canvasHeight = vars.canvasHeight,
 	generation = vars.generation,
-	boxes = [],
+	addGen = true,
 	history = [],
+	seeds = [],
+	grid,
 	isDrawing = false,
 	paint = true,
 	genTarget = vars.genTarget,
 	stepBtn = vars.stepBtn,
 	runBtn = vars.runBtn,
 	restBtn = vars.restBtn,
+	seedBtn = vars.seedBtn,
 	paintRadios = vars.paintRadios;
 
 yearTag.innerText = new Date().getFullYear();
@@ -37,22 +42,41 @@ yearTag.innerText = new Date().getFullYear();
 ctx.canvas.width = canvasWidth;
 ctx.canvas.height = canvasHeight;
 
+function create2DArray(cols, rows) {
+	let arr = new Array(cols);
+	for (let i = 0; i < arr.length; i++) {
+		arr[i] = new Array(rows);
+	}
+	return arr;
+}
+
 /**
  * Poplulat the array with the default values
  */
-
-function buildGrid() {
+export function resetGrid(seedMap, item) {
 	x = 0;
 	y = 0;
+	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
 	id = 0;
-	boxes = [];
-
-	while (x < canvasWidth) {
-		while (y < canvasHeight) {
-			let box = new Box(id, x, y, false, '#57b816', offset, 0);
+	generation = 0;
+	addGen = true;
+	history = [];
+	seedBtn.disabled = true;
+	setGeneration(generation);
+	if (!seedMap) getSeeds();
+	addHistory(history, generation);
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
+			let alive = false;
+			seedMap != undefined
+				? seedMap[id] === 1
+					? (alive = true)
+					: (alive = false)
+				: (alive = false);
+			let box = new Box(id, x, y, alive, '#57b816', offset, 0);
+			grid[i][j] = box;
 			y = y + offset;
 			id++;
-			boxes.push(box);
 			drawGrid(box);
 		}
 		y = 0;
@@ -65,64 +89,75 @@ function buildGrid() {
  * @param {*} gridItem
  * @param {*} pop
  */
-function updateData(gridItem, pop) {
+function updateData(gridItem, pop, x, y) {
 	let print = null;
-	let newbox = boxes.find((box) => box.id === gridItem.id);
+	let newbox = grid[x][y];
 	newbox.population = pop;
-	boxes.splice(newbox.id, 1, newbox);
-	gridItem.fill == true ? (print = 1) : (print = 0);
-	let thisHistory = history[generation - 1];
-	thisHistory.fingerprint.push(print);
+	grid[x][y] = newbox;
+	gridItem.alive == true ? (print = 1) : (print = 0);
 }
 
 function stepIteration() {
-	setGeneration();
-	history.push(new History(generation));
-	let historyObj = history[generation - 1];
+	updateHistory(history, grid, generation);
+	if (addGen) generation++;
+	setGeneration(generation);
+	addHistory(history, generation);
 
-	let fill = false;
-	boxes.forEach((box) => {
-		let localPopulation = checkPopulated(boxes, box);
-		box.population = localPopulation;
-		updateData(box, localPopulation);
-	});
-	//console.log(historyObj.fingerprint);
-	let isStatic = false;
-	let historyObj1 = history[generation - 1];
-	let historyObj2 = history[generation - 2];
-	if (generation >= 2) {
-		isStatic = checkStatic(
-			historyObj1.fingerprint,
-			historyObj2.fingerprint
-		);
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
+			let box = grid[i][j];
+			let localPopulation = checkPopulation(grid, i, j);
+			box.population = localPopulation;
+			updateData(box, localPopulation, i, j);
+		}
 	}
 
-	if (!isStatic) {
+	let isStatic = null;
+
+	if (generation >= 2) {
+		isStatic = checkStatic(history, generation);
+	}
+
+	if (isStatic === null) {
 		updateGrid();
+	} else if (isStatic == 'ocilating') {
+		updateGrid();
+		stopGen();
 	} else {
 		resetRun(runBtn);
 	}
 }
 
-function updateGrid() {
+function stopGen(situation) {
+	addGen = false;
+	resetRun(runBtn, false);
+}
+
+function updateGrid(situation) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	boxes.forEach((box) => {
-		if (box.fill === false && box.population === 3) box.fill = true;
-		if ((box.fill === true && box.population < 2) || box.population > 3)
-			box.fill = false;
-		drawGrid(box);
-	});
+
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
+			let box = grid[i][j];
+			if (box.alive === false && box.population === 3) box.alive = true;
+			if (
+				(box.alive === true && box.population < 2) ||
+				box.population > 3
+			)
+				box.alive = false;
+			drawGrid(box);
+		}
+	}
 }
 
 function setGeneration() {
-	generation++;
 	genTarget.innerText = `Generation: ${generation}`;
 }
 
 document.fonts.ready.then(function () {
 	elemLeft = getWindowOffset().left;
 	elemTop = getWindowOffset().top;
-	buildGrid();
+	resetGrid();
 });
 
 // Event listeners
@@ -134,11 +169,12 @@ stepBtn.addEventListener('click', () => {
 
 runBtn.addEventListener('click', () => {
 	if (runBtn.getAttribute('data-run') == 'true') {
-		window.setRunTime = setInterval(stepIteration, vars.speed);
+		window.setRunTime = setInterval(stepIteration, vars.SPEED);
 		runBtn.setAttribute('data-run', false);
 		runBtn.innerText = 'Stop';
 		runBtn.classList.remove('isStopped');
 		runBtn.classList.add('isRunning');
+		addGen = true;
 	} else {
 		resetRun(runBtn);
 	}
@@ -147,8 +183,12 @@ runBtn.addEventListener('click', () => {
 restBtn.addEventListener('click', () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	resetRun(runBtn);
-	generation = 0;
-	buildGrid();
+	resetGrid();
+});
+
+seedBtn.addEventListener('click', () => {
+	let seed = history[0];
+	saveSeed(history, seeds);
 });
 
 for (let i = 0, len = paintRadios.length; i < len; i++) {
@@ -168,7 +208,7 @@ canvas.addEventListener(
 		let x = e.pageX - elemLeft,
 			y = e.pageY - elemTop;
 		resetRun(runBtn);
-		checkBoxesOnClick(boxes, x, y, 'click', paint);
+		checkBoxesOnClick(grid, x, y, 'click', paint);
 	},
 	false
 );
@@ -195,12 +235,13 @@ canvas.addEventListener(
 		if (isDrawing) {
 			let x = e.pageX - elemLeft,
 				y = e.pageY - elemTop;
-			debounce(checkBoxesOnClick(boxes, x, y, 'paint', paint), 250);
+			debounce(checkBoxesOnClick(grid, x, y, 'paint', paint), 250);
 		}
 	},
 	false
 );
 
 window.addEventListener('resize', () => {
-	getWindowOffset();
+	elemLeft = getWindowOffset().left;
+	elemTop = getWindowOffset().top;
 });

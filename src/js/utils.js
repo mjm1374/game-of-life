@@ -20,60 +20,54 @@ export function debounce(func, wait, immediate) {
 	};
 }
 
-export function checkPopulated(boxes, box) {
-	const boxId = box.id;
-	const colPos = box.y;
-	const rowPos = box.x;
-	const testGridCol = [];
-	const testGrid = [];
-	const searchCoord = [-Math.abs(vars.offset), 0, vars.offset];
-	let population;
-
-	for (let i = 0; i < 3; i++) {
-		let searchCol = colPos + searchCoord[i];
-		let thisCol = boxes.filter((box) => box.y == searchCol);
-		testGridCol.push(...thisCol);
+export function checkPopulation(grid, x, y) {
+	const colCnt = vars.canvasWidth / vars.offset - 1;
+	const rowCnt = vars.canvasHeight / vars.offset - 1;
+	let population = 0;
+	for (let i = -1; i < 2; i++) {
+		for (let j = -1; j < 2; j++) {
+			let thisCol = (x + i + colCnt) % colCnt;
+			let thisRow = (y + j + rowCnt) % rowCnt;
+			let neighbor = grid[thisCol][thisRow];
+			population += neighbor.alive;
+		}
 	}
-
-	for (let i = 0; i < 3; i++) {
-		let searchRow = rowPos + searchCoord[i];
-		let thisCol = testGridCol.filter((box) => box.x == searchRow);
-		testGrid.push(...thisCol);
-	}
-
-	const center = testGrid.find((box) => box.id === boxId);
-	testGrid.splice(testGrid.indexOf(center), 1);
-	population = testGrid.reduce((a, b) => ({ fill: a.fill + b.fill }));
-	return population.fill;
+	let center = grid[x][y];
+	population -= center.alive;
+	return population;
 }
 
-export function resetRun(runBtn) {
-	clearInterval(window.setRunTime);
+export function resetRun(runBtn, clear = true) {
+	if (clear) clearInterval(window.setRunTime);
 	runBtn.setAttribute('data-run', true);
 	runBtn.classList.remove('isRunning');
 	runBtn.classList.add('isStopped');
 	runBtn.innerText = 'Run';
 }
+
 /**
  * Check the state of the box currently clicked
  * @param {*} x
  * @param {*} y
  * @param {*} state
  */
-export function checkBoxesOnClick(boxes, x, y, state, paint) {
-	boxes.forEach(function (box) {
-		if (
-			y > box.y &&
-			y < box.y + box.width &&
-			x > box.x &&
-			x < box.x + box.height
-		) {
-			//console.log('clicked an element', box.id, box.x, box.y);
-			state === 'click'
-				? flipColor(boxes, box, state)
-				: paintColor(boxes, box, paint);
+export function checkBoxesOnClick(grid, x, y, state, paint) {
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[i].length; j++) {
+			let box = grid[i][j];
+			if (
+				y > box.y &&
+				y < box.y + box.width &&
+				x > box.x &&
+				x < box.x + box.height
+			) {
+				state === 'click'
+					? flipColor(grid, i, j)
+					: paintColor(grid, i, j, paint);
+				break;
+			}
 		}
-	});
+	}
 }
 
 /**
@@ -86,34 +80,77 @@ export function drawGrid(box) {
 	vars.ctx.rect(box.x, box.y, box.width, box.height);
 	vars.ctx.fillStyle = box.color;
 	vars.ctx.strokeStyle = '#56962a';
-	box.fill ? vars.ctx.fill() : vars.ctx.stroke();
+	box.alive ? vars.ctx.fill() : vars.ctx.stroke();
 	vars.ctx.closePath();
 	vars.ctx.restore();
 }
 
-export function checkStatic(a, b) {
-	return (
+export function checkStatic(history, generation) {
+	let a,
+		b,
+		c = null,
+		status = null;
+
+	a = history[generation - 1].fingerprint;
+	b = history[generation - 2].fingerprint;
+	c = history[generation - 3];
+	if (typeof c === 'object') c = c.fingerprint;
+
+	if (
 		Array.isArray(a) &&
 		Array.isArray(b) &&
 		a.length === b.length &&
 		a.every((val, index) => val === b[index])
-	);
+	) {
+		return (status = 'static');
+	}
+
+	if (
+		Array.isArray(a) &&
+		Array.isArray(c) &&
+		a.length === b.length &&
+		a.every((val, index) => val === c[index]) &&
+		c != undefined
+	) {
+		return (status = 'ocilating');
+	}
+	return status;
 }
 
 //private
 
 // adds and subtracts to the data set
-function flipColor(boxes, gridItem) {
-	let newbox = boxes.find((box) => box.id === gridItem.id);
-	newbox.fill ? (newbox.fill = false) : (newbox.fill = true);
-	boxes.splice(newbox.id, 1, newbox);
-	drawGrid(newbox);
+function flipColor(grid, x, y) {
+	let newbox = grid[x][y];
+	newbox.alive ? (newbox.alive = false) : (newbox.alive = true);
+	grid[x][y] = newbox;
+	debounce(drawGrid(newbox), 5000);
 }
 
 // adds and subtracts to the data set
-function paintColor(boxes, gridItem, paint) {
-	let newbox = boxes.find((box) => box.id === gridItem.id);
-	paint == true ? (newbox.fill = true) : (newbox.fill = false);
-	boxes.splice(newbox.id, 1, newbox);
+function paintColor(grid, x, y, paint) {
+	let newbox = grid[x][y];
+	paint == true ? (newbox.alive = true) : (newbox.alive = false);
+	grid[x][y] = newbox;
 	debounce(drawGrid(newbox), 5000);
+}
+
+/* Make and element
+    elem: string {required} -  type of DOM element you want to create
+    cssClasses: string {optional} -  can be comma deliminated to attach multiple classes
+    elemID: string {optional} - Element ID is needed
+*/
+export function makeElement(elem, cssClasses, elemID) {
+	let theClasses = [];
+	if (cssClasses != undefined) theClasses = cssClasses.split(', ');
+	if (typeof elem !== 'undefined' && elem.trim() !== '') {
+		const newElem = document.createElement(elem);
+		if (theClasses.length > 0 && theClasses[0] !== '') {
+			theClasses.forEach((cssClass) => newElem.classList.add(cssClass));
+		}
+		if (elemID != undefined && elemID != '')
+			newElem.setAttribute('id', elemID);
+
+		return newElem;
+	}
 }
