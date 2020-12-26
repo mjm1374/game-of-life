@@ -10,6 +10,8 @@ export const paintRadios = document.querySelectorAll('input[name="paint"]');
 export const seedBtn = document.querySelector('[data-seed]');
 export const seedSelect = document.querySelector('[data-selectSeed]');
 export const seedNameInput = document.querySelector('[data-seedName]');
+export const renameBtn = document.querySelector('[data-rename]');
+export const deleteBtn = document.querySelector('[data-delete]');
 
 // starting config
 export const SPEED = 50;
@@ -46,5 +48,7 @@ export default {
 	seedBtn,
 	seedSelect,
 	seedNameInput,
+	renameBtn,
+	deleteBtn,
 	LOCAL_STORAGE_SEEDS,
 };
