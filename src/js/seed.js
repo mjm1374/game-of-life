@@ -93,7 +93,7 @@ function setLocalStorageSeeds(value) {
 
 function checkForLocalSeeds() {
 	let seeds = getLocalStorageSeeds();
-	if (seeds.length > 0) {
+	if (seeds) {
 		return parseSeedFromJSON(seeds);
 	} else {
 		return [];
