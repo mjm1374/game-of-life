@@ -59,11 +59,13 @@ export function renameSeed() {
 export function deleteSeed() {
 	let seeds = checkForLocalSeeds();
 	let seedLocation = seedSelect.value;
-	seeds.splice(seedLocation, 1);
-	seeds = convertSeedToJSON(seeds);
-	setLocalStorageSeeds(seeds);
-	seedNameInput.value = '';
-	getSeeds();
+	if (seedLocation != '') {
+		seeds.splice(seedLocation, 1);
+		seeds = convertSeedToJSON(seeds);
+		setLocalStorageSeeds(seeds);
+		seedNameInput.value = '';
+		getSeeds();
+	}
 }
 
 //private
@@ -102,7 +104,6 @@ renameBtn.addEventListener('mouseup', function () {
 });
 
 deleteBtn.addEventListener('mouseup', function () {
-	console.log('delete');
 	deleteSeed();
 });
 
