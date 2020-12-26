@@ -75,7 +75,7 @@ h1 {
 .ext-link {
     color: white;
     padding: 20px 0;
-    display: block;
+    display: inline-block;
     text-decoration: none;
 }
 

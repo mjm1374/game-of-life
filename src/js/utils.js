@@ -44,6 +44,7 @@ export function resetRun(runBtn, clear = true) {
 	runBtn.classList.add('isStopped');
 	runBtn.innerText = 'Run';
 }
+
 /**
  * Check the state of the box currently clicked
  * @param {*} x

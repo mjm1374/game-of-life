@@ -25,6 +25,7 @@ export let generation = 0;
 export let offset = 10;
 export let canvasWidth = 1000;
 export let canvasHeight = 500;
+export let seedMap = [];
 
 export default {
 	yearTag,
@@ -40,6 +41,7 @@ export default {
 	offset,
 	canvasWidth,
 	canvasHeight,
+	seedMap,
 	genTarget,
 	stepBtn,
 	runBtn,

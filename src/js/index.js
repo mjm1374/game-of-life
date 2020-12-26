@@ -53,20 +53,27 @@ function create2DArray(cols, rows) {
 /**
  * Poplulat the array with the default values
  */
-function resetGrid() {
+export function resetGrid(seedMap, item) {
 	x = 0;
 	y = 0;
 	grid = create2DArray(canvasWidth / offset, canvasHeight / offset);
 	id = 0;
+	generation = 0;
 	addGen = true;
 	history = [];
 	seedBtn.disabled = true;
 	setGeneration(generation);
-	getSeeds();
+	if (!seedMap) getSeeds();
 	addHistory(history, generation);
 	for (let i = 0; i < grid.length; i++) {
 		for (let j = 0; j < grid[i].length; j++) {
-			let box = new Box(id, x, y, false, '#57b816', offset, 0);
+			let alive = false;
+			seedMap != undefined
+				? seedMap[id] === 1
+					? (alive = true)
+					: (alive = false)
+				: (alive = false);
+			let box = new Box(id, x, y, alive, '#57b816', offset, 0);
 			grid[i][j] = box;
 			y = y + offset;
 			id++;
@@ -176,7 +183,6 @@ runBtn.addEventListener('click', () => {
 restBtn.addEventListener('click', () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	resetRun(runBtn);
-	generation = 0;
 	resetGrid();
 });
 

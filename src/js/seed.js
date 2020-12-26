@@ -1,17 +1,20 @@
 import { Seed } from './models.js';
-import { makeElement } from './utils.js';
+import { resetGrid } from './index.js';
+import { makeElement, resetRun } from './utils.js';
 import {
 	seedBtn,
 	seedSelect,
 	seedNameInput,
 	renameBtn,
 	deleteBtn,
+	runBtn,
 	LOCAL_STORAGE_SEEDS,
 } from './vars.js';
 
-export function getSeeds() {
+export function getSeeds(item) {
 	let seeds = checkForLocalSeeds();
 	let i = 0;
+	renameBtn.disabled = true;
 	seedSelect.innerHTML = '<option value="" selected>Saved Seeds</option>';
 	seeds.forEach((seed) => {
 		let SeeedListItem = makeElement('option', 'seedlist');
@@ -38,6 +41,8 @@ export function loadSeed(seed) {
 	let updateSeed = savedSeeds[seed];
 	seedNameInput.value = updateSeed.name;
 	renameBtn.disabled = false;
+	resetRun(runBtn);
+	resetGrid(updateSeed.seed, seed);
 }
 
 export function renameSeed() {
@@ -50,7 +55,7 @@ export function renameSeed() {
 		seeds = convertSeedToJSON(seeds);
 		setLocalStorageSeeds(seeds);
 		seedNameInput.value = '';
-		getSeeds();
+		getSeeds(seedLocation);
 	} else {
 		alert('Can not have blank names.');
 	}
