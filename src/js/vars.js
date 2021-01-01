@@ -16,6 +16,7 @@ export const deleteBtn = document.querySelector('[data-delete]');
 // starting config
 export const SPEED = 50;
 export const LOCAL_STORAGE_SEEDS = 'seeds';
+export const HISTORY_DEPTH = 100;
 export let elemLeft = 0;
 export let elemTop = 0;
 export let x = 0;

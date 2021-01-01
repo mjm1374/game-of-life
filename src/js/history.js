@@ -1,5 +1,5 @@
-import { History, Seed } from './models.js';
-import { seedBtn, LOCAL_STORAGE_SEEDS } from './vars.js';
+import { History } from './models.js';
+import { seedBtn, HISTORY_DEPTH } from './vars.js';
 
 export function updateHistory(history, grid, gen) {
 	if (gen === 0) seedBtn.disabled = false;
@@ -13,8 +13,35 @@ export function updateHistory(history, grid, gen) {
 	}
 }
 
+export function checkStatic(history, generation) {
+	let a,
+		b,
+		loopLimit = null,
+		status = null;
+
+	a = history[generation - 1].fingerprint;
+	generation > HISTORY_DEPTH
+		? (loopLimit = generation - HISTORY_DEPTH)
+		: (loopLimit = 1);
+
+	for (let i = generation - 2; i >= loopLimit; i--) {
+		b = history[i].fingerprint;
+		if (
+			Array.isArray(a) &&
+			Array.isArray(b) &&
+			a.length === b.length &&
+			a.reduce((x, y) => x + y, 0) === b.reduce((x, y) => x + y, 0) &&
+			a.every((val, index) => val === b[index])
+		) {
+			generation - i === 1 ? (status = 'static') : (status = 'ocilating');
+			break;
+		}
+	}
+	return status;
+}
+
 export function addHistory(history, gen) {
 	history.push(new History(gen));
 }
 
-export default { updateHistory, addHistory };
+export default { updateHistory, addHistory, checkStatic };

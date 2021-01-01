@@ -85,38 +85,6 @@ export function drawGrid(box) {
 	vars.ctx.restore();
 }
 
-export function checkStatic(history, generation) {
-	let a,
-		b,
-		c = null,
-		status = null;
-
-	a = history[generation - 1].fingerprint;
-	b = history[generation - 2].fingerprint;
-	c = history[generation - 3];
-	if (typeof c === 'object') c = c.fingerprint;
-
-	if (
-		Array.isArray(a) &&
-		Array.isArray(b) &&
-		a.length === b.length &&
-		a.every((val, index) => val === b[index])
-	) {
-		return (status = 'static');
-	}
-
-	if (
-		Array.isArray(a) &&
-		Array.isArray(c) &&
-		a.length === b.length &&
-		a.every((val, index) => val === c[index]) &&
-		c != undefined
-	) {
-		return (status = 'ocilating');
-	}
-	return status;
-}
-
 //private
 
 // adds and subtracts to the data set

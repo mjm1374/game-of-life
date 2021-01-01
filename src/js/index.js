@@ -1,7 +1,7 @@
 import * as vars from './vars.js';
 import { Box } from './models.js';
 import { getSeeds, saveSeed } from './seed.js';
-import { addHistory, updateHistory } from './history.js';
+import { addHistory, updateHistory, checkStatic } from './history.js';
 import {
 	getWindowOffset,
 	checkPopulation,
@@ -9,7 +9,6 @@ import {
 	debounce,
 	checkBoxesOnClick,
 	drawGrid,
-	checkStatic,
 } from './utils.js';
 
 const yearTag = vars.yearTag;
@@ -112,11 +111,7 @@ function stepIteration() {
 		}
 	}
 
-	let isStatic = null;
-
-	if (generation >= 2) {
-		isStatic = checkStatic(history, generation);
-	}
+	let isStatic = checkStatic(history, generation);
 
 	if (isStatic === null) {
 		updateGrid();
