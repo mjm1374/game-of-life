@@ -145,7 +145,7 @@ function updateGrid(situation) {
 	}
 }
 
-function setGeneration() {
+export function setGeneration(generation) {
 	genTarget.innerText = `Generation: ${generation}`;
 }
 

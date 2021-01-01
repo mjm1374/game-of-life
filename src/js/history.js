@@ -1,5 +1,6 @@
 import { History } from './models.js';
-import { seedBtn, HISTORY_DEPTH } from './vars.js';
+import { seedBtn, HISTORY_DEPTH, generation } from './vars.js';
+import { setGeneration } from './index.js';
 
 export function updateHistory(history, grid, gen) {
 	if (gen === 0) seedBtn.disabled = false;
